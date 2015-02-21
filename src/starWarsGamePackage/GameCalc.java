@@ -5,7 +5,7 @@ import java.util.Random;
 public class GameCalc {
 	
 	Random rollDice = new Random();
-	
+	//Meh
 	private int diceRoll = 0;
 	private int yourHull = 0;
 	private int yourShields = 0;
