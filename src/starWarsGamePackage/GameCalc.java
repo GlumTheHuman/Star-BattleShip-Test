@@ -24,6 +24,7 @@ public class GameCalc {
 	private int comIonCharge = 0;
 	private int computerMaxHull;
 	private int shield;
+	private int waitFor;
 	
 	private boolean ionShields = false;
 	private boolean comIonShields = false;
@@ -369,7 +370,7 @@ public class GameCalc {
 			this.comIonCharge--;	
 		}
 		
-		if (computerShields <= 5 || computerHull <=15) {
+		if (computerShields <= 5 || computerHull <= 15) {
 			diceRoll = rollDice.nextInt(2);
 			if (diceRoll == 0 && computerHull <= 15 && shield <= 3) {
 				if (computerPower >= 40) {
@@ -389,7 +390,28 @@ public class GameCalc {
 			} else {
 				wait = true;
 			}
-		}
+		} else if (yourHull <= 20) {
+			if (computerMissiles < 0 && computerCoolDown <= 0) {
+				if (computerPower >= 50) {
+					computerMissile(computerMissiles, computerCoolDown, computerDamage, comNullShields);
+				} else if (computerPower >= 25) {
+					wait = true;
+				} else {
+					waitFor = 2;
+				}
+			} else if (computerPower >= 50) {
+				computerLaser(computerPower, computerDamage, 3);
+			} else if (computerPower >= 25) {
+				computerLaser(computerPower, computerDamage, 2);
+				waitFor = 2;
+			} 
+			
+ 		} else if (computerCoolDown > 0) {
+ 			diceRoll = rollDice.nextInt(3);
+ 			if (diceRoll == 0 && diceRoll == 1) {
+ 				computerLaser(computerPower, computerDamage, 1);
+ 			}
+ 		} else if ()
 		
 		
 		if (this.computerCoolDown > 0) {
