@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class StarWarsGame {
 	
-	private static int highscore = 4420;
+	private static int highscore = 3032;
 	
 	private static String input2;
 	
@@ -24,6 +24,7 @@ public class StarWarsGame {
 	private static int yourShieldRegen = 0;
 	private static int yourMaxShields = 0;
 	private static int yourMaxHull = 0;
+	private static int yourMaxMissiles = 0;
 	
 	private static boolean doWhileLoop = true;
 	private static boolean doWhileLoop2 = true;
@@ -35,7 +36,7 @@ public class StarWarsGame {
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 		
-		System.out.println("Star BattleShip Beta 1.4.2 type LOG for more");
+		System.out.println("Star BattleShip Beta 1.5.1 type LOG for more");
 		System.out.println();
 		System.out.println("-Highscore: " + highscore + "-");
 		System.out.println();
@@ -75,6 +76,7 @@ public class StarWarsGame {
 				yourMaxPower = cetacea.power;
 				yourMaxShields = cetacea.shields;
 				yourMaxHull = cetacea.hull;
+				yourMaxMissiles = cetacea.missiles;
 				System.out.println("You have choosen: Cetacea class");
 				doWhileLoop2 = false;
 			break;
@@ -99,6 +101,7 @@ public class StarWarsGame {
 				yourMaxPower = barius.power;
 				yourMaxShields = barius.shields;
 				yourMaxHull = barius.hull;
+				yourMaxMissiles = barius.missiles;
 				System.out.println("You have choosen: Barius class");
 				doWhileLoop2 = false;
 			break;
@@ -109,7 +112,7 @@ public class StarWarsGame {
 				lyrian.setShields(20);
 				lyrian.setShieldRegen(4);
 				lyrian.setPower(120);
-				lyrian.setPowerRegen(20);
+				lyrian.setPowerRegen(25);
 				lyrian.setMissiles(5);
 				lyrian.setIonCanon(2);
 				
@@ -123,14 +126,22 @@ public class StarWarsGame {
 				yourMaxPower = lyrian.power;
 				yourMaxShields = lyrian.shields;
 				yourMaxHull = lyrian.hull;
+				yourMaxMissiles = lyrian.missiles;
 				System.out.println("You have choosen: Lyrian class");
 				doWhileLoop2 = false;
 			break;
 		
 			case "log" :
 				System.out.println();
-				System.out.println("Beta 1.4.2");
+				System.out.println("Beta 1.5.1");
+				System.out.println("-Added a cooldown for lasers.");
+				System.out.println();
+				System.out.println("Beta 1.4.5");
 				System.out.println("-Added new ship classes: Cetacea, Lyrian and Barius.");
+				System.out.println("-Added new AI for the Barius.(also the ai will only choose the barius(only for a while though(I hope)))");
+				System.out.println("-Fixed subsystems.");
+				System.out.println("-Updated scoring system.");
+				System.out.println("-Fixed even more bugs.");
 				System.out.println();
 				System.out.println("Beta 1.3.5");
 				System.out.println("-Added subsystems: Heavy Lasers, Ion Canon and Power Core.");
@@ -177,8 +188,12 @@ public class StarWarsGame {
 			} else if (yourShields < 20 && command.getComCharge() > 0) {
 				yourShields += 1;
 			}
-			if (ionCharge > 0) {
+			if (command.getIonC()) {
+				if (ionCharge > 0) {
 				ionCharge--;
+				}
+			} else {
+				ionCharge = 0;
 			}
 			
 			yourDamage = command.getDamage();
@@ -190,29 +205,34 @@ public class StarWarsGame {
 			System.out.println("Shields at " + yourShields + "/" + yourMaxShields);
 			System.out.println("Hull at " + yourHull + "/" + yourMaxHull);
 			System.out.println("You have " + yourMissiles + " missiles");
+			System.out.println("Laser heat at " + command.getYourLCD());
 			if (yourCoolDown > 0) {
 				System.out.println("Missile cooldown at " + yourCoolDown + "%");
 			} else {
 				System.out.println("Missiles not on cooldown");
 			}
-			if (ionCharge > 0) {
-				System.out.println("Ion canon charging: " + ionCharge + " turns left");
-			} else {
-				System.out.println("Ion canon is charged");
+			if (command.getIonC()) {
+				if (ionCharge > 0) {
+					System.out.println("Ion canon charging: " + ionCharge + " turns left");
+				} else {
+					System.out.println("Ion canon is charged");
+				}
 			}
 			System.out.println();
 			command.getComStats();
 			System.out.println();
-			if (command.getIonC()) {
+			if (command.getIonC() && command.getYourLCD() < 100) {
 				System.out.println("Type in LASER(50-10), MISSILE(80), SHIELD(65-25), ION(80) or WAIT:");
-			} else {
-				System.out.println("Type in LASER(50-10), MISSILE(80), SHIELD(65-25), or WAIT:");	
+			} else if (!command.getIonC() && command.getYourLCD() < 100) {
+				System.out.println("Type in MISSILE(80), SHIELD(65-25), ION(80) or WAIT:");
+			} else if (!command.getIonC() && command.getYourLCD() >= 100) {
+				System.out.println("Type in MISSILE(80), SHIELD(65-25) or WAIT:");
 			}
 			input2 = input.next();
 			
 			if ("laser".equals(input2)) {
 				
-				if(command.getHeavyL()) {
+				if(command.getHeavyL() && command.getYourLCD() < 100) {
 				System.out.println("Select power level: High 12Dmg(50), Med 8Dmg(20), Low 4Dmg(10)");
 				input2 = input.next();
 				
@@ -220,13 +240,15 @@ public class StarWarsGame {
 				yourDamage = command.getDamage();
 				yourPower = command.getPower();
 				doAttack = true;
-				} else {
+				} else if(!command.getHeavyL() && command.getYourLCD() > 100) {
 					System.out.println("Select power level: Med 8Dmg(20), Low 4Dmg(10)");
 					input2 = input.next();
 					
 					command.laser(input2, yourPower, yourDamage, false);
 					yourDamage = command.getDamage();
 					yourPower = command.getPower();
+				} else {
+					System.out.println("You can't fire your lasers, they have overheated!");
 				}
 			} else if ("shield".equals(input2)) {
 				System.out.println("Select  level: High +7(65), Med +5(40), Low +3(25)");
@@ -248,8 +270,16 @@ public class StarWarsGame {
 			} else if ("log".equals(input2)) {
 				
 				System.out.println();
-				System.out.println("Beta 1.4.0");
+				System.out.println("Beta 1.5.1");
+				System.out.println("-Added a cooldown for lasers.");
+				System.out.println();
+				System.out.println("Beta 1.4.5");
 				System.out.println("-Added new ship classes: Cetacea, Lyrian and Barius.");
+				System.out.println("-Added new AI for the Barius.(also the ai will only choose the barius(only for a while though(I hope)))");
+				System.out.println("-Fixed subsystems.");
+				System.out.println("-Updated scoring system.");
+				System.out.println("-Added a cooldown for lasers.");
+				System.out.println("-Fixed even more bugs.");
 				System.out.println();
 				System.out.println("Beta 1.3.5");
 				System.out.println("-Added subsystems: Heavy Lasers, Ion Canon and Power Core.");
@@ -307,13 +337,15 @@ public class StarWarsGame {
 				nullShields = command.getNull();
 				yourDamage = command.getDamage();
 				doAttack = false;
-			
+				
+				if (yourDamage > 0) {
 				command.testDamage(command.getComHull(), "The computers ", 2);	
+				}
 			}
 			
 			
 			if (yourHull <= 0) {
-				command.findScore(score, yourHull, yourMissiles, yourShields, command.getComShields(), yourPower, round);
+				command.findScore(score, yourHull, yourMissiles, yourShields, command.getComShields(), yourPower, round, yourMaxHull, yourMaxShields, yourMaxMissiles, yourMaxPower);
 				score = command.getScore();
 				System.out.println("-----------------------");
 				System.out.println("Game over.");
@@ -326,7 +358,7 @@ public class StarWarsGame {
 				doWhileLoop = false;
 			} else if (command.getComHull() <= 0) {
 				System.out.println("-------------");
-				command.findScore(score, yourHull, yourMissiles, yourShields, command.getComShields(), yourPower, round);
+				command.findScore(score, yourHull, yourMissiles, yourShields, command.getComShields(), yourPower, round, yourMaxHull, yourMaxShields, yourMaxMissiles, yourMaxPower);
 				score = command.getScore();
 				System.out.println("You have won!");
 				if (score > highscore) {
@@ -339,11 +371,13 @@ public class StarWarsGame {
 			}
 			if (doWhileLoop) {
 				
-				command.computerTurn(yourHull, command.getComHull(), yourShields, command.getComShields(), command.getComPower());
+				command.bariusAi(yourHull, command.getComHull(), yourShields, command.getComShields(), command.getComPower());
 				yourHull = command.getYourHull();
 				yourShields = command.getShields();
 				
-				command.testDamage(yourHull, "Your ", 1);
+				if (command.getComDamage() > 0) {
+					command.testDamage(yourHull, "Your ", 1);
+				}
 				
 				
 				if (yourCoolDown > 0) {

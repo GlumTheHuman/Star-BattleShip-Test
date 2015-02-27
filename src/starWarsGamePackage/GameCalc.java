@@ -5,7 +5,7 @@ import java.util.Random;
 public class GameCalc {
 	
 	Random rollDice = new Random();
-	//Meh
+	
 	private int diceRoll = 0;
 	private int yourHull = 0;
 	private int yourShields = 0;
@@ -25,7 +25,17 @@ public class GameCalc {
 	private int computerMaxHull;
 	private int shield;
 	private int waitFor;
+	private int yourLCD;
+	private static int computerLCD;
+	private static int heatFor = 0;
+	private static int comHeatFor = 0;
+	private static int attack = 0;
+	private static int comAttack = 0;
 	
+	private boolean comDoAttack = false;
+	private boolean doAttack = false;
+	private boolean overHeat = false;
+	private boolean comOverHeat = false;
 	private boolean ionShields = false;
 	private boolean comIonShields = false;
 	private boolean comNullShields = false;
@@ -46,83 +56,97 @@ public class GameCalc {
 	public void testDamage(int hull, String player, int num){
 		
 		diceRoll = rollDice.nextInt(5);
-		
-		if (hull <= 15) {
 			
-		} else if (hull <=25 && diceRoll <= 4) {
+		if (hull <=25 && diceRoll <= 4) {
 			diceRoll = rollDice.nextInt(3);
 			if (diceRoll == 0) {
 				if(num == 1 && heavyLasers) {
 					heavyLasers = false;
+					System.out.println(player + "heavy lasers have been destroyed!");
 				} else if (num == 2 && comHeavyLasers) {
 					comHeavyLasers = false;
+					System.out.println(player + "heavy lasers have been destroyed!");
 				}
-				System.out.println(player + "heavy lasers have been destroyed!");
+				
 			} else if (diceRoll == 1) {
-				if(num == 1 && ionCanon) {
+				if(num == 1 && ionCanon == true) {
 					ionCanon = false;
+					System.out.println(player + "ion canon has been destroyed!");
 				} else if (num == 2 && comIonCanon) {
 					comIonCanon = false;
+					System.out.println(player + "ion canon has been destroyed!");
 				}
-				System.out.println(player + "ion canon has been destroyed!");
+				
 			} else if (diceRoll == 2) {
 				if(num == 1 && powerCore) {
 					powerCore = false;
+					System.out.println(player + "power core has been destroyed!");
 				} else if (num == 2 && comPowerCore) {
 					comPowerCore = false;
+					System.out.println(player + "power core has been destroyed!");
 				}
-				System.out.println(player + "power core has been destroyed!");
+				
 			}
 		} else if (hull <= 35 && diceRoll <= 2) {
 			diceRoll = rollDice.nextInt(3);
 			if (diceRoll == 0) {
 				if(num == 1 && heavyLasers) {
 					heavyLasers = false;
+					System.out.println(player + "heavy lasers have been destroyed!");
 				} else if (num == 2 && comHeavyLasers) {
 					comHeavyLasers = false;
+					System.out.println(player + "heavy lasers have been destroyed!");
 				}
-				System.out.println(player + "heavy lasers have been destroyed!");
+				
 			} else if (diceRoll == 1) {
 				if(num == 1 && ionCanon) {
 					ionCanon = false;
+					System.out.println(player + "ion canon has been destroyed!");
 				} else if (num == 2 && comIonCanon) {
 					comIonCanon = false;
+					System.out.println(player + "ion canon has been destroyed!");
 				}
-				System.out.println(player + "ion canon has been destroyed!");
+				
 			} else if (diceRoll == 2) {
 				if(num == 1 && powerCore) {
 					powerCore = false;
+					System.out.println(player + "power core has been destroyed!");
 				} else if (num == 2 && comPowerCore) {
 					comPowerCore = false;
+					System.out.println(player + "power core has been destroyed!");
 				}
-				System.out.println(player + "power core has been destroyed!");
+				
 			}
 		} else if (hull <= 50 && diceRoll == 0) {
 			diceRoll = rollDice.nextInt(2);
 			if (diceRoll == 0) {
 				if(num == 1 && heavyLasers) {
 					heavyLasers = false;
+					System.out.println(player + "heavy lasers have been destroyed!");
 				} else if (num == 2 && comHeavyLasers) {
 					comHeavyLasers = false;
+					System.out.println(player + "heavy lasers have been destroyed!");
 				}
-				System.out.println(player + "heavy lasers have been destroyed!");
+
 			} else if (diceRoll == 1) {
 				if(num == 1  && ionCanon) {
 					ionCanon = false;
+					System.out.println(player + "ion canon has been destroyed!");
 				} else if (num == 2&& comIonCanon) {
 					comIonCanon = false;
+					System.out.println(player + "ion canon has been destroyed!");
 				}
-				System.out.println(player + "ion canon has been destroyed!");
+				
 			}
 		}
 	}
 	
-	public void findScore(int score, int yourHull, int yourMissiles, int yourShields, int computerShields, int yourPower, int round) {
+	public void findScore(int score, int yourHull, int yourMissiles, int yourShields, int computerShields, int yourPower, int round, int yourMaxHull, int yourMaxShields, int yourMaxMissiles, int yourMaxPower) {
 		this.score = score;
-		this.score = this.score + yourHull * 20;
-		this.score = this.score + yourShields * 40;
-		this.score = this.score + yourPower * 10;
-		this.score = this.score + yourMissiles * 300;
+		this.score = 2000 * yourHull / yourMaxHull;
+		this.score = this.score + 500 * yourMaxShields / yourMaxShields;
+		// "Danger. Do not enter!"this.score = this.score + 30 * yourPower * yourMaxPower /675;
+		this.score = this.score + 100 * yourMissiles / yourMaxMissiles;
 		this.score = this.score - round * 70;
 		if (heavyLasers && ionCanon && powerCore) {
 			this.score = this.score + 750;
@@ -138,6 +162,7 @@ public class GameCalc {
 		} else if (comHeavyLasers == false || comPowerCore == false || comIonCanon == false) {
 			this.score = this.score + 100;
 		}
+		
 	}
 	
 	public void computerTurn(int yourHull, int computerHull, int yourShields, int computerShields, int computerPower) {
@@ -336,7 +361,9 @@ public class GameCalc {
 	}
 	
 	public void bariusAi(int yourHull, int computerHull, int yourShields, int computerShields, int computerPower) {
-
+		
+		laserCoolDown();
+		
 		computerDamage = 0;
 		this.yourShields = yourShields;
 		this.yourHull = yourHull;
@@ -369,50 +396,78 @@ public class GameCalc {
 		if (this.comIonCharge > 0) {
 			this.comIonCharge--;	
 		}
-		
-		if (computerShields <= 5 || computerHull <= 15) {
-			diceRoll = rollDice.nextInt(2);
-			if (diceRoll == 0 && computerHull <= 15 && shield <= 3) {
-				if (computerPower >= 40) {
+		if (!wait || waitFor <= 0) {
+			if (computerShields <= 5 || computerHull <= 15) {
+				diceRoll = rollDice.nextInt(2);
+				if (diceRoll == 0 && computerHull <= 15 && shield <= 3) {
+					if (computerPower >= 40) {
+						computerShield(computerPower, computerShields, 2);
+					} else if (computerPower >= 25) {
+						computerShield(computerPower, computerShields, 1);
+					}
+				} else if (computerPower >= 65 && diceRoll == 1) {
+					computerShield(computerPower, computerShields, 3);
+					shield++;
+				} else if (computerPower >= 40 && diceRoll == 1) {
 					computerShield(computerPower, computerShields, 2);
-				} else if (computerPower >= 25) {
+					shield++;
+				} else if (computerPower >= 25 && diceRoll == 1) {
 					computerShield(computerPower, computerShields, 1);
-				}
-			} else if (computerPower >= 65 && diceRoll == 1) {
-				computerShield(computerPower, computerShields, 3);
-				shield++;
-			} else if (computerPower >= 40 && diceRoll == 1) {
-				computerShield(computerPower, computerShields, 2);
-				shield++;
-			} else if (computerPower >= 25 && diceRoll == 1) {
-				computerShield(computerPower, computerShields, 1);
-				shield++;
-			} else {
-				wait = true;
-			}
-		} else if (yourHull <= 20) {
-			if (computerMissiles < 0 && computerCoolDown <= 0) {
-				if (computerPower >= 50) {
-					computerMissile(computerMissiles, computerCoolDown, computerDamage, comNullShields);
-				} else if (computerPower >= 25) {
-					wait = true;
+					shield++;
 				} else {
-					waitFor = 2;
+					wait = true;
 				}
-			} else if (computerPower >= 50) {
-				computerLaser(computerPower, computerDamage, 3);
-			} else if (computerPower >= 25) {
-				computerLaser(computerPower, computerDamage, 2);
-				waitFor = 2;
-			} 
-			
- 		} else if (computerCoolDown > 0) {
- 			diceRoll = rollDice.nextInt(3);
- 			if (diceRoll == 0 && diceRoll == 1) {
- 				computerLaser(computerPower, computerDamage, 1);
- 			}
- 		} else if ()
-		
+			} else if (yourHull <= 20) {
+				if (computerMissiles > 0 && computerCoolDown <= 0) {
+					if (computerPower >= 50) {
+						computerMissile(computerMissiles, computerCoolDown, computerDamage, comNullShields);
+					} else if (computerPower >= 25) {
+						wait = true;
+					} else {
+						waitFor = 2;
+					}
+				} else if (computerPower >= 50) {
+					computerLaser(computerPower, computerDamage, 3);
+				} else if (computerPower >= 20) {
+					computerLaser(computerPower, computerDamage, 2);
+					waitFor = 2;
+				} 	
+	 		} else if (computerCoolDown > 0) {
+	 			diceRoll = rollDice.nextInt(3);
+	 			if (diceRoll == 0 && diceRoll == 1) {
+	 				computerLaser(computerPower, computerDamage, 1);
+	 			}
+	 		} else {
+	 			diceRoll = rollDice.nextInt(3);
+	 			if (diceRoll == 0) {
+	 				if (computerPower >= 50) {
+	 					computerLaser(computerPower, computerDamage, 3);
+	 				} else if (computerPower >= 10) {
+	 					computerLaser(computerPower, computerDamage, 1);
+	 				} else {
+	 					wait = true;
+	 				}
+	 			} else if (diceRoll == 1) {
+	 				if (computerPower >= 50 && computerMissiles > 0) {
+	 					computerMissile(computerMissiles, computerCoolDown, computerDamage, comNullShields);
+	 				} else if (computerPower >= 20) {
+	 					computerLaser(computerPower, computerDamage, 2);
+	 				}
+	 			} else if (diceRoll == 2) {
+	 				if (computerPower >= 40) {
+	 					computerShield(computerPower, computerShields, 2);
+	 				} else if (computerPower >= 25) {
+	 					computerShield(computerPower, computerShields, 1);
+	 				}
+	 			}
+	 		}
+		} else {
+			if (wait) {
+				wait = false;
+			} else if (waitFor > 0) {
+				waitFor--;
+			}
+		}
 		
 		if (this.computerCoolDown > 0) {
 			if (this.computerPower >= this.computerCoolDown) {
@@ -424,6 +479,9 @@ public class GameCalc {
 			}
 			
 		}
+		
+		
+		
 		if (comNullShields != true && comIonShields != true) {
 			this.yourShields -= computerDamage;
 			if (this.yourShields <= 0) {
@@ -442,6 +500,9 @@ public class GameCalc {
 			this.yourHull -= this.computerDamage * 2;
 			comNullShields = false;
 		}
+		
+		comLaserCoolDown();
+		System.out.println("Computers heat " + computerLCD);
 		
 	}
 	
@@ -476,8 +537,12 @@ public class GameCalc {
 				this.computerShields += computerShieldRegen;
 			}
 		}	
-		if (this.comIonCharge > 0) {
-			this.comIonCharge--;	
+		if (comIonCanon) {
+			if (this.comIonCharge > 0) {
+				this.comIonCharge--;	
+			}
+		} else {
+			comIonCharge = 0;
 		}
 		
 		//Put new Ai here:
@@ -515,7 +580,8 @@ public class GameCalc {
 	}
 	
 	public void computerShip() {
-		diceRoll = rollDice.nextInt(3);	
+		//diceRoll = rollDice.nextInt(3);
+		diceRoll = 1;
 		switch (diceRoll) {
 			case 0 :
 				Starship cetacea = new Starship();
@@ -571,7 +637,7 @@ public class GameCalc {
 				lyrian.setShields(20);
 				lyrian.setShieldRegen(4);
 				lyrian.setPower(120);
-				lyrian.setPowerRegen(20);
+				lyrian.setPowerRegen(25);
 				lyrian.setMissiles(5);
 				lyrian.setIonCanon(2);
 				
@@ -612,11 +678,10 @@ public class GameCalc {
 	}
 	
 	public void computerLaser(int computerPower, int computerDamage, int number) {
-		
-		
 		if (number == 3) {
 			this.computerDamage = 12;
 			this.computerPower -= 50;
+			
 		} else if (number== 2) {
 			this.computerDamage = 8;
 			this.computerPower -= 20;
@@ -693,15 +758,19 @@ public class GameCalc {
 	
 	public void laser(String input2, int yourPower, int yourDamage, boolean boo) {
 		
+		
 		if (boo) {
 			this.yourPower = yourPower;
 			this.yourDamage = 0;
 			if ("high".equals(input2) && yourPower - 50 < 0) {
 				System.out.println("You need more power.");
+				this.yourDamage = 0;
 			} else if ("med".equals(input2) && yourPower - 20 < 0) {
 				System.out.println("You need more power.");
+				this.yourDamage = 0;
 			} else if ("low".equals(input2) && yourPower - 10 < 0) {
 				System.out.println("You need more power.");
+				this.yourDamage = 0;
 			} else {
 				switch (input2) {
 				case "high":
@@ -709,6 +778,7 @@ public class GameCalc {
 					this.yourPower -= 50;
 					System.out.println();
 					System.out.println("Your fire lasers dealing " + this.yourDamage + " damage");
+					attack = 3;
 					break;
 				
 				case "med":
@@ -716,6 +786,7 @@ public class GameCalc {
 					this.yourPower -= 20;
 					System.out.println();
 					System.out.println("Your fire lasers dealing " + this.yourDamage + " damage");
+					attack = 2;
 					break;
 			
 				case "low":
@@ -723,19 +794,24 @@ public class GameCalc {
 					this.yourPower -= 10;
 					System.out.println();
 					System.out.println("Your fire lasers dealing " + this.yourDamage + " damage");
+					attack = 1;
 					break;
 				
 				}
+				
 			}
 		} else {
 			this.yourPower = yourPower;
 			this.yourDamage = 0;
 			if ("high".equals(input2)) {
 				System.out.println("Your heavy canons have taken too much damage!");
+				this.yourDamage = 0;
 			} else if ("med".equals(input2) && yourPower - 20 < 0) {
 				System.out.println("You need more power.");
+				this.yourDamage = 0;
 			} else if ("low".equals(input2) && yourPower - 10 < 0) {
 				System.out.println("You need more power.");
+				this.yourDamage = 0;
 			} else {
 				switch (input2) {
 				
@@ -771,11 +847,12 @@ public class GameCalc {
 			this.yourCoolDown = 80;
 			this.yourDamage = 8;	
 			this.nullShields = true;
-			
 		} else if (yourMissiles <= 0) {
 			System.out.println("You need more missiles!");
+			this.yourDamage = 0;
 		} else {
 			System.out.println("You are still on cooldown!");
+			this.yourDamage = 0;
 		}
 		System.out.println("You fire a missile dealing " + this.yourDamage + " damage");
 	}
@@ -791,7 +868,8 @@ public class GameCalc {
 			System.out.println();
 			System.out.println("You fire your ion canon dealing " + this.yourDamage + " damage");
 		} else {
-			System.out.println("Your need more power!");
+			System.out.println("You need more power!");
+			this.yourDamage = 0;
 		}
 		
 	}
@@ -821,7 +899,100 @@ public class GameCalc {
 		}
 	}
 	
-	public int getShields() {
+	public void laserCoolDown () {
+		
+		if (attack > 0) {
+			switch (attack) {
+				case 3:
+					yourLCD += 40;
+					doAttack = true;
+				break;
+				
+				case 2:
+					yourLCD += 25;
+					doAttack = true;
+				break;
+				
+				case 1:
+					yourLCD += 15;
+					doAttack = true;
+				break;
+			}
+			if (yourLCD >= 100) {
+				yourLCD = 100;
+				overHeat = true;
+				heatFor = 2;
+				System.out.println("Your lasers have overheated!");
+			}
+			attack = 0;
+		}
+		if (!doAttack) {
+			if (!overHeat && yourLCD > 0) {
+				yourLCD -= 25;
+				if (yourLCD < 0) {
+					yourLCD = 0;
+				}
+			} else if (overHeat) {
+				if (heatFor > 0) {
+					heatFor--;
+				}
+				if (heatFor == 0) {
+					overHeat = false;
+				}
+			}
+			
+		} else {
+			doAttack = false;
+		}
+	}
+	
+	public void comLaserCoolDown () {
+
+		if (comAttack > 0) {
+			switch (comAttack) {
+				case 3:
+					computerLCD += 40;
+					comDoAttack = true;
+				break;
+				
+				case 2:
+					computerLCD += 25;
+					comDoAttack = true;
+				break;
+				
+				case 1:
+					computerLCD += 15;
+					comDoAttack = true;
+				break;
+			}
+			if (computerLCD >= 100) {
+				computerLCD = 100;
+				comOverHeat = true;
+				comHeatFor = 2;
+			}
+			comAttack = 0;
+		}
+		if (!comDoAttack) {
+			if (!comOverHeat && computerLCD > 0) {
+				computerLCD -= 25;
+				if (computerLCD < 0) {
+					computerLCD = 0;
+				}
+			} else if (comOverHeat) {
+				if (comHeatFor > 0) {
+					comHeatFor--;
+				}
+				if (comHeatFor == 0) {
+					comOverHeat = false;
+				}
+			}
+			
+		} else {
+			comDoAttack = false;
+		}
+	}
+	
+ 	public int getShields() {
 		return yourShields;
 	}
 	
@@ -831,6 +1002,10 @@ public class GameCalc {
 	
 	public int getDamage() {
 		return yourDamage;
+	}
+	
+	public int getComDamage() {
+		return computerDamage;
 	}
 	
 	public int getCoolDown() {
@@ -867,6 +1042,10 @@ public class GameCalc {
 	
 	public int getCharge() {
 		return this.ionCharge;
+	}
+	
+	public int getYourLCD() {
+		return this.yourLCD;
 	}
 	
 	public int getComCharge() {
