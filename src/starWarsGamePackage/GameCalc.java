@@ -5,53 +5,57 @@ import java.util.Random;
 public class GameCalc {
 	
 	Random rollDice = new Random();
-	
+
+	private int shield;
+	private int waitFor;
 	private int diceRoll = 0;
+	
 	private int yourHull = 0;
 	private int yourShields = 0;
 	private int yourPower = 0;
 	private int yourDamage = 0;
-	private int yourCoolDown = 0;
 	private int yourMissiles = 0;
+	private int yourCoolDown = 0;
+	private int yourLCD;
+	private int ionCharge = 0;
+	
 	private int computerHull = 0;
 	private int computerShields = 0;
 	private int computerPower = 0;
 	private int computerDamage = 0;
 	private int computerMissiles = 0;
 	private int computerCoolDown = 0;
-	private int score = 0;
-	private int ionCharge = 0;
+	private int computerLCD;
 	private int comIonCharge = 0;
+	private int score = 0;
 	private int computerMaxHull;
-	private int shield;
-	private int waitFor;
-	private int yourLCD;
-	private static int computerLCD;
-	private static int heatFor = 0;
-	private static int comHeatFor = 0;
-	private static int attack = 0;
-	private static int comAttack = 0;
+	private int heatFor = 0;
+	private int comHeatFor = 0;
+	private int attack = 0;
+	private int comAttack = 0;
+	private int computerMaxPower = 0;
+	private int computerIon = 0;
+	private int computerPowerRegen = 0;
+	private int computerShieldRegen = 0;
+	private int computerMaxShields = 0;
 	
-	private boolean comDoAttack = false;
+	private boolean wait = false;
+	
 	private boolean doAttack = false;
 	private boolean overHeat = false;
-	private boolean comOverHeat = false;
 	private boolean ionShields = false;
-	private boolean comIonShields = false;
-	private boolean comNullShields = false;
 	private boolean nullShields = false;
-	private boolean wait = false;
 	private boolean powerCore = true;
 	private boolean ionCanon = true;
 	private boolean heavyLasers = true;
+	
+	private boolean comDoAttack = false;
+	private boolean comOverHeat = false;
+	private boolean comIonShields = false;
+	private boolean comNullShields = false;
 	private boolean comPowerCore = true;
 	private boolean comIonCanon = true;
 	private boolean comHeavyLasers = true;
-	private static int computerMaxPower = 0;
-	private static int computerIon = 0;
-	private static int computerPowerRegen = 0;
-	private static int computerShieldRegen = 0;
-	private static int computerMaxShields = 0;
 
 	public void testDamage(int hull, String player, int num){
 		
@@ -147,7 +151,7 @@ public class GameCalc {
 		this.score = this.score + 500 * yourMaxShields / yourMaxShields;
 		// "Danger. Do not enter!"this.score = this.score + 30 * yourPower * yourMaxPower /675;
 		this.score = this.score + 100 * yourMissiles / yourMaxMissiles;
-		this.score = this.score - round * 70;
+		this.score = this.score - round * 50;
 		if (heavyLasers && ionCanon && powerCore) {
 			this.score = this.score + 750;
 		} else if ((heavyLasers && ionCanon) || (heavyLasers && powerCore) || (powerCore && ionCanon)) {
@@ -398,7 +402,7 @@ public class GameCalc {
 		}
 		if (!wait || waitFor <= 0) {
 			if (computerShields <= 5 || computerHull <= 15) {
-				diceRoll = rollDice.nextInt(2);
+				diceRoll = rollDice.nextInt(3);
 				if (diceRoll == 0 && computerHull <= 15 && shield <= 3) {
 					if (computerPower >= 40) {
 						computerShield(computerPower, computerShields, 2);
@@ -414,6 +418,13 @@ public class GameCalc {
 				} else if (computerPower >= 25 && diceRoll == 1) {
 					computerShield(computerPower, computerShields, 1);
 					shield++;
+					
+				} else if (diceRoll == 2) {
+					if (computerPower >= 50) {
+						computerLaser(computerPower, computerDamage, 3);
+					} else if (computerPower >= 25) {
+						computerLaser(computerPower, computerDamage, 2);
+					}
 				} else {
 					wait = true;
 				}
@@ -426,23 +437,23 @@ public class GameCalc {
 					} else {
 						waitFor = 2;
 					}
-				} else if (computerPower >= 50) {
+				} else if (computerPower >= 50 && computerLCD < 100) {
 					computerLaser(computerPower, computerDamage, 3);
-				} else if (computerPower >= 20) {
+				} else if (computerPower >= 20 && computerLCD < 100) {
 					computerLaser(computerPower, computerDamage, 2);
 					waitFor = 2;
 				} 	
 	 		} else if (computerCoolDown > 0) {
 	 			diceRoll = rollDice.nextInt(3);
-	 			if (diceRoll == 0 && diceRoll == 1) {
+	 			if (diceRoll == 0 || diceRoll == 1 && computerLCD < 100) {
 	 				computerLaser(computerPower, computerDamage, 1);
 	 			}
 	 		} else {
 	 			diceRoll = rollDice.nextInt(3);
 	 			if (diceRoll == 0) {
-	 				if (computerPower >= 50) {
+	 				if (computerPower >= 50 && computerLCD < 100) {
 	 					computerLaser(computerPower, computerDamage, 3);
-	 				} else if (computerPower >= 10) {
+	 				} else if (computerPower >= 10 && computerLCD < 100) {
 	 					computerLaser(computerPower, computerDamage, 1);
 	 				} else {
 	 					wait = true;
@@ -450,7 +461,7 @@ public class GameCalc {
 	 			} else if (diceRoll == 1) {
 	 				if (computerPower >= 50 && computerMissiles > 0) {
 	 					computerMissile(computerMissiles, computerCoolDown, computerDamage, comNullShields);
-	 				} else if (computerPower >= 20) {
+	 				} else if (computerPower >= 20 && computerLCD < 100) {
 	 					computerLaser(computerPower, computerDamage, 2);
 	 				}
 	 			} else if (diceRoll == 2) {
@@ -502,8 +513,7 @@ public class GameCalc {
 		}
 		
 		comLaserCoolDown();
-		System.out.println("Computers heat " + computerLCD);
-		
+
 	}
 	
 	public void lyrianAi(int yourHull, int computerHull, int yourShields, int computerShields, int computerPower) {
@@ -681,13 +691,19 @@ public class GameCalc {
 		if (number == 3) {
 			this.computerDamage = 12;
 			this.computerPower -= 50;
+			comAttack = 3;
 			
 		} else if (number== 2) {
 			this.computerDamage = 8;
 			this.computerPower -= 20;
+			comAttack = 2;
 		} else if (number== 1) {
 			this.computerDamage = 4;
 			this.computerPower -= 10;
+			comAttack = 1;
+		}
+		if (this.yourShields < 0) {
+			this.yourShields = 0;
 		}
 		System.out.println();
 		System.out.println("The computer fires lasers dealing " + this.computerDamage + " damage");
@@ -798,6 +814,9 @@ public class GameCalc {
 					break;
 				
 				}
+				if (this.computerShields < 0) {
+					this.computerShields = 0;
+				}
 				
 			}
 		} else {
@@ -904,17 +923,17 @@ public class GameCalc {
 		if (attack > 0) {
 			switch (attack) {
 				case 3:
-					yourLCD += 40;
+					yourLCD += 50;
 					doAttack = true;
 				break;
 				
 				case 2:
-					yourLCD += 25;
+					yourLCD += 35;
 					doAttack = true;
 				break;
 				
 				case 1:
-					yourLCD += 15;
+					yourLCD += 25;
 					doAttack = true;
 				break;
 			}
@@ -951,17 +970,17 @@ public class GameCalc {
 		if (comAttack > 0) {
 			switch (comAttack) {
 				case 3:
-					computerLCD += 40;
+					computerLCD += 50;
 					comDoAttack = true;
 				break;
 				
 				case 2:
-					computerLCD += 25;
+					computerLCD += 35;
 					comDoAttack = true;
 				break;
 				
 				case 1:
-					computerLCD += 15;
+					computerLCD += 25;
 					comDoAttack = true;
 				break;
 			}

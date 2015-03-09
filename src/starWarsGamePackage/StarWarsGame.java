@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 public class StarWarsGame {
 	
-	private static int highscore = 3032;
+	private static int highscore = 1956;
 	
 	private static String input2;
 	
 	
 	private static int score = 0;
-	private static int round = 0;
+	private static int round = 1;
 	private static int yourHull = 0;
 	private static int yourShields = 0;
 	private static int yourPower = 0;
@@ -36,14 +36,14 @@ public class StarWarsGame {
 	public static void main(String[] args) {
 		Scanner input = new Scanner(System.in);
 		
-		System.out.println("Star BattleShip Beta 1.5.1 type LOG for more");
+		System.out.println("Star BattleShip Beta 1.5.3 type LOG for more");
 		System.out.println();
 		System.out.println("-Highscore: " + highscore + "-");
 		System.out.println();
 		System.out.println("Put some helpful game rule jargon stuff here:");
 		do {
 			System.out.println();
-			System.out.println("Choose your starship class: CETACEA, LYRIAN, BARIUS or INFO");
+			System.out.println("Choose your starship class: CETACEA, LYRIAN, BARIUS, LOG or INFO");
 			input2 = input.next();
 			switch (input2){
 			
@@ -133,8 +133,9 @@ public class StarWarsGame {
 		
 			case "log" :
 				System.out.println();
-				System.out.println("Beta 1.5.1");
+				System.out.println("Beta 1.5.3");
 				System.out.println("-Added a cooldown for lasers.");
+				System.out.println("-Fixed more bugs.");
 				System.out.println();
 				System.out.println("Beta 1.4.5");
 				System.out.println("-Added new ship classes: Cetacea, Lyrian and Barius.");
@@ -223,10 +224,12 @@ public class StarWarsGame {
 			System.out.println();
 			if (command.getIonC() && command.getYourLCD() < 100) {
 				System.out.println("Type in LASER(50-10), MISSILE(80), SHIELD(65-25), ION(80) or WAIT:");
-			} else if (!command.getIonC() && command.getYourLCD() < 100) {
+			} else if (command.getIonC() && command.getYourLCD() >= 100) {
 				System.out.println("Type in MISSILE(80), SHIELD(65-25), ION(80) or WAIT:");
 			} else if (!command.getIonC() && command.getYourLCD() >= 100) {
 				System.out.println("Type in MISSILE(80), SHIELD(65-25) or WAIT:");
+			} else if (!command.getIonC() && command.getYourLCD() < 100) {
+				System.out.println("Type in LASER(50-10) MISSILE(80), SHIELD(65-25) or WAIT:");
 			}
 			input2 = input.next();
 			
@@ -270,8 +273,10 @@ public class StarWarsGame {
 			} else if ("log".equals(input2)) {
 				
 				System.out.println();
-				System.out.println("Beta 1.5.1");
+				System.out.println("Beta 1.5.3");
 				System.out.println("-Added a cooldown for lasers.");
+				System.out.println("-Updated Ai.");
+				System.out.println("-Fixed more bugs");
 				System.out.println();
 				System.out.println("Beta 1.4.5");
 				System.out.println("-Added new ship classes: Cetacea, Lyrian and Barius.");
@@ -319,8 +324,8 @@ public class StarWarsGame {
 				System.out.println("Spud Gun: Charging... 78%");
 				System.out.println("Spud Gun: Charging... 99%");
 				System.out.println("Spud Gun: 100%. Ready to Fire.");
-				System.out.println("Jimmy: FIRE!");
-				System.out.println("Billy: IMA FIRIN' MY SPUD CANNON!");
+				System.out.println("Billy: FIRE!");
+				System.out.println("Jimmy: IMA FIRIN' MY SPUD CANNON!");
 				System.out.println("*Wooosh*");
 				System.out.println(".");
 				System.out.println(".");
@@ -330,6 +335,16 @@ public class StarWarsGame {
 				System.out.println("Jimmy: ...");
 				System.out.println("Billy: We're doomed...");
 				System.out.println();
+				
+			} else if ("potayno".equals(input2)) {
+				while(true) {
+					System.out.println("NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					System.out.println("JONAH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					System.out.println("YOU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					System.out.println("CRASHED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					System.out.println("THE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+					System.out.println("GAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				}
 			}
 				
 			if (doAttack) {
